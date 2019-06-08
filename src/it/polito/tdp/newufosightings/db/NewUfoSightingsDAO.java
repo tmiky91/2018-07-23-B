@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import it.polito.tdp.newufosightings.model.Sighting;
 import it.polito.tdp.newufosightings.model.State;
@@ -40,7 +41,7 @@ public class NewUfoSightingsDAO {
 		}
 	}
 
-	public List<State> loadAllStates() {
+	public List<State> loadAllStates(Map<String, State> idMap) {
 		String sql = "SELECT * FROM state";
 		List<State> result = new ArrayList<State>();
 
@@ -50,10 +51,15 @@ public class NewUfoSightingsDAO {
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-				State state = new State(rs.getString("id"), rs.getString("Name"), rs.getString("Capital"),
-						rs.getDouble("Lat"), rs.getDouble("Lng"), rs.getInt("Area"), rs.getInt("Population"),
-						rs.getString("Neighbors"));
-				result.add(state);
+				if(!idMap.containsKey(rs.getString("id"))) {
+					State state = new State(rs.getString("id"), rs.getString("Name"), rs.getString("Capital"),
+							rs.getDouble("Lat"), rs.getDouble("Lng"), rs.getInt("Area"), rs.getInt("Population"),
+							rs.getString("Neighbors"));
+					result.add(state);
+					idMap.put(rs.getString("id"), state);
+				}else {
+					result.add(idMap.get(rs.getString("id")));
+				}
 			}
 
 			conn.close();

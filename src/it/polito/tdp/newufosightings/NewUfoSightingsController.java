@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import it.polito.tdp.newufosightings.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -48,6 +49,17 @@ public class NewUfoSightingsController {
 
 	@FXML
 	void doCreaGrafo(ActionEvent event) {
+		String anno = txtAnno.getText();
+		String giorno = txtxG.getText();
+		if(anno!=null && !anno.isEmpty() && giorno!=null && !giorno.isEmpty()) {
+			if(model.isDigit1(giorno) && model.isDigit2(anno)) {
+				txtResult.setText(model.getSommaPesiArchi(anno, giorno));
+			}else {
+				showMessage("Errore: Inserisci un anno valido e un N.giorni valido");
+			}
+		}else {
+			showMessage("Errore: Inserisci un anno e un N.giorni");
+		}
 
 	}
 
@@ -71,5 +83,11 @@ public class NewUfoSightingsController {
 	public void setModel(Model model) {
 		this.model = model;
 
+	}
+	
+	private void showMessage(String message) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setContentText(message);
+		alert.show();
 	}
 }
